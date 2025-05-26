@@ -1,8 +1,8 @@
 version: '3.9'
 
 services:
-  db:
-    container_name: db
+  finantial-manager-db:
+    container_name: finantial-manager-db
     image: postgres:16
     environment:
       POSTGRES_PASSWORD: 1234
@@ -10,8 +10,26 @@ services:
       POSTGRES_DB: finantial_manager
     ports:
       - 5432:5432
-    # volumes:
-    #   - pgdata:/var/lib/postgresql/data
+    networks:
+      - backend
 
-# volumes:
-#   pgdata: {}
+  finantial-manager-api:
+    container_name: finantial-manager-api
+    build: 
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - 8000:8000
+    depends_on:
+      - finantial-manager-db
+    environment:
+      DB_HOST: finantial-manager-db
+      DB_PORT: 5432
+      DB_USER: postgres
+      DB_PASSWORD: 1234
+      DB_NAME: finantial_manager
+    networks:
+      - backend
+
+networks:
+  backend:
