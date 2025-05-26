@@ -3,7 +3,9 @@ package controller
 import (
 	"finantial-manager-api/model"
 	"finantial-manager-api/use_case"
+	"fmt"
 	"net/http"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
@@ -48,4 +50,48 @@ func (tr *TransactionController) CreateTransaction(ctx *gin.Context) {
 	}
 
 	ctx.JSON(http.StatusCreated, newTransaction)
+}
+
+func (tr *TransactionController) GetransactionById(ctx *gin.Context) {
+
+	id := ctx.Param("id")
+
+	if (id == "") {
+		ctx.JSON(
+			http.StatusBadRequest,
+			model.Response{
+				Message: "Id can´t be null",
+			})
+		return
+	}
+
+	transactionId, err := strconv.Atoi(id)
+
+	if (err != nil) {
+		ctx.JSON(
+			http.StatusBadRequest,
+			model.Response{
+				Message: "Id should be a number",
+			})
+		return
+	}
+
+	transaction, err := tr.transactionUseCase.GetTransactionById(transactionId)
+
+	if (transaction == nil) {
+		ctx.JSON(
+			http.StatusNotFound,
+			model.Response{
+				Message: fmt.Sprintf(
+					"Transaction not found for id = %d", transactionId),
+			})
+		return
+	}
+
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, err)
+		return
+	}
+
+	ctx.JSON(http.StatusCreated, transaction)
 }

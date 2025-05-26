@@ -37,6 +37,7 @@ func main() {
 
 	server.GET("/transactions", transactionController.GetTransactions)
 	server.POST("/transactions", transactionController.CreateTransaction)
+	server.GET("transactions/:id", transactionController.GetransactionById)
 
 	server.Run(":8000")
 }

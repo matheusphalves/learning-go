@@ -19,9 +19,8 @@ func (tu *TransactionUsecase) GetTransactions() ([]model.Transaction, error) {
 	return tu.repository.GetTransactions()
 }
 
-
 func (tu *TransactionUsecase) CreateTransaction(transaction model.Transaction) (model.Transaction, error) {
-	
+
 	id, err := tu.repository.CreateTransaction(transaction)
 
 	if err != nil {
@@ -31,4 +30,15 @@ func (tu *TransactionUsecase) CreateTransaction(transaction model.Transaction) (
 	transaction.ID = id
 
 	return transaction, nil
+}
+
+func (tu *TransactionUsecase) GetTransactionById(id int) (*model.Transaction, error) {
+	transaction, err := tu.repository.GetTransactionById(id)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return transaction, nil
+
 }
